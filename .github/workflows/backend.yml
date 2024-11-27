@@ -1,9 +1,14 @@
+# github-actionsの名前
 name: backend
 
 on:
   push:
+    # git pushするbranch指定
     branches:
       - main
+  schedule:
+    # 日本時間で毎晩21時
+    - cron: "0 12 * * *"
 
 defaults:
   run:
@@ -11,21 +16,28 @@ defaults:
 
 jobs:
   build:
+    #実行環境 windows
     runs-on: windows-latest
     steps:
+      # 使用するnodeバージョン
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-
+      # インストール
       - run: npm ci
+      # jestでテストコード実行しcoverage
       - run: npx jest -- --coverage
+      # ビルド
       - run: npm run build
+      # 成果物(coverage)のアップロード
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: coverage
           path: backend/coverage/**
           retention-days: 5
+      # 成果物(dist)のアップロード
       - uses: actions/upload-artifact@v4
         with:
           name: dist
