@@ -6,9 +6,6 @@ on:
     # git pushするbranch指定
     branches:
       - main
-  schedule:
-    # 日本時間で毎晩21時
-    - cron: "0 12 * * *"
 
 defaults:
   run:
